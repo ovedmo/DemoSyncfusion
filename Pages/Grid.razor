@@ -64,7 +64,7 @@
             }*@
             @if (MyRows != null)
             {
-                <SfGrid TValue="MainTable" @bind-DataSource="@MyRows" >
+                <SfGrid TValue="MainTable" @bind-DataSource="@MyRows" ><!-- hello -->
                     <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true" AllowNextRowEdit="true" AllowEditOnDblClick="true" Mode="EditMode.Batch"></GridEditSettings>
                     <GridEvents TValue="MainTable" RowSelected="setRowSelected" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                     <GridColumns>
