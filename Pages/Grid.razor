@@ -1,30 +1,133 @@
 ﻿@page "/grid"
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Inputs
+@using CorrectoService
+
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid DataSource="@Orders"  AllowSorting="true" AllowPaging="true">
-                <GridSortSettings>
-                    <GridSortColumns>
-                        <GridSortColumn Field="CustomerID" Direction="SortDirection.Ascending"></GridSortColumn>
-                        <GridSortColumn Field="OrderDate" Direction="SortDirection.Descending"></GridSortColumn>
-                    </GridSortColumns>
-                </GridSortSettings>
-                <GridColumns>
-                    <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-                    <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150"></GridColumn>
-                    <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                    <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-                </GridColumns>
-            </SfGrid>
+            <!--<SfGrid @ref="sfgridref" DataSource ="@Orders" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" AllowSorting="false" AllowPaging="true" @onkeypress="@Keypress">
+    <GridEditSettings AllowAdding="true" AllowDeleting="true"  AllowEditing="true" AllowNextRowEdit="true" AllowEditOnDblClick="true" Mode="EditMode.Batch"></GridEditSettings>
+    <GridEvents TValue="Order" OnCellEdit="RowSelectedEvent" ></GridEvents>
+    <GridSortSettings>-->
+            @*<GridSortColumns>
+            <GridSortColumn Field="CustomerID" Direction="SortDirection.Ascending"></GridSortColumn>
+            <GridSortColumn Field="OrderDate" Direction="SortDirection.Descending"></GridSortColumn>
+        </G*@
+            <!--ridSortColumns>
+    </GridSortSettings>
+    <GridColumns>
+        <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" TextAlign="TextAlign.Right" Width="100">
+            <Template>-->
+            @*@getmuki(((context as Order).OrderID))*@
+            <!--@if (((context as Order).OrderID) == 1010)
+    {
+        <div class="bg-info">@((context as Order).OrderID)</div>
+    }
+    else
+    {
+        <div>@((context as Order).OrderID)</div>
+    }-->
+            @*<SfNumericTextBox TValue="int" Value=@((context as Order).OrderID)></SfNumericTextBox>*@
+            <!--</Template>
+
+                <EditTemplate>
+                    <SfNumericTextBox TValue="int" Value=@((context as Order).OrderID)></SfNumericTextBox>
+                </EditTemplate>
+            </GridColumn>
+
+            <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150">
+                <EditTemplate>
+                    <SfAutoComplete TItem="Order" TValue="string" ID="CustomerID" @bind-Value="@((context as Order).CustomerID)" DataSource="@Orders">
+                        <AutoCompleteFieldSettings Value="CustomerID"></AutoCompleteFieldSettings>
+                    </SfAutoComplete>
+                </EditTemplate>
+
+            </GridColumn>
+            <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+            <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+        </GridColumns>
+    </SfGrid>-->
+            @*@if (MyRows != null)
+            {
+                <SfGrid @ref="MyOrders" TValue="MainTable" @bind-DataSource="@MyRows" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })" AllowSorting="false" AllowPaging="false" @onkeyup="@onkeyup" SelectedRowIndex="@rowSelect">
+                    <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true" AllowNextRowEdit="true" AllowEditOnDblClick="true" Mode="EditMode.Batch"></GridEditSettings>
+                    <GridEvents TValue="MainTable" RowSelected="setRowSelected" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                    <GridColumns>
+                        <GridColumn Field="DocTypeColumn" HeaderText="DocTypeColumn" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                        <GridColumn Field="PolicyNumColumn" HeaderText="PolicyNumColumn" Width=120></GridColumn>
+                        <GridColumn @ref="myGc" Field=@nameof(MainTable.IdentityColumn) HeaderText="IdentityColumn" Visible="@GetIfVisible("DocTypeColumn")" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                        <GridColumn Field=@nameof(MainTable.WebServGood) HeaderText="WebServGood" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                    </GridColumns>
+                </SfGrid>
+            }*@
+            @if (MyRows != null)
+            {
+                <SfGrid TValue="MainTable" @bind-DataSource="@MyRows" ><!-- hello -->
+                    <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true" AllowNextRowEdit="true" AllowEditOnDblClick="true" Mode="EditMode.Batch"></GridEditSettings>
+                    <GridEvents TValue="MainTable" RowSelected="setRowSelected" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                    <GridColumns>
+                        <GridColumn Field="DocTypeColumn" HeaderText="DocTypeColumn" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                        <GridColumn Field="PolicyNumColumn" HeaderText="PolicyNumColumn" Width=120></GridColumn>
+                        <GridColumn @ref="myGc" Field=@nameof(MainTable.IdentityColumn) HeaderText="IdentityColumn" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                        <GridColumn Field=@nameof(MainTable.WebServGood) HeaderText="WebServGood" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+                    </GridColumns>
+                </SfGrid>
+            }
         </div>
     </div>
 </div>
 @code{
-    public List<Order> Orders { get; set; }
-    protected override void OnInitialized()
+    //GridEvents
+    //SfGrid
+    //KeyboardEventArgs
+    //GridColumn
+
+    public GridColumn myGc = new GridColumn();
+    public int CoulmnIndex = 0;
+    public bool VisibilityStatus = false;
+    public List<Order> Orders;
+    public SfGrid<MainTable> MyOrders = new();
+    public List<MainTable> MyRows;
+    public List<CoulmnsTable> MyColumns;
+    public double rowSelect = 0;
+    public string Evnvironment;
+    public SfGrid<Order> sfgridref = new();
+    public MainTable selectedRowData;
+    RunScriptsSQLSoapClient newSqlent = new RunScriptsSQLSoapClient(RunScriptsSQLSoapClient.EndpointConfiguration.RunScriptsSQLSoap12);
+    protected override async Task OnInitializedAsync()
     {
+        Evnvironment = "הפקה חיים";//to do
+        var respons = await newSqlent.ExcuteSQLWebServiceAsync("*", "TblConfigFields", "WHERE Environment = N'" + Evnvironment + "' ORDER BY OrderField", "");
+        MyColumns = respons.Body.ExcuteSQLWebServiceResult.Select(x => new CoulmnsTable()
+        {
+            TableName = x[0],
+            Environment = x[1],
+            FieldName = x[2],
+            FieldNameHeb = x[3],
+            Visible = x[4],
+            OrderField = x[5],
+            ColumnEdit = x[6],
+            ColumnWidth = x[7],
+            ColumnIsList = x[8]
+
+        }).ToList();
+
+        //var respons1 = await newSqlent.AddAsync(3, 8);
+        respons = await newSqlent.ExcuteSQLWebServiceAsync("*", "TblNameTest", "", "");
+        //var holdData = respons.ToString();
+        MyRows = respons.Body.ExcuteSQLWebServiceResult.Select(x => new MainTable()
+        {
+            DocTypeColumn = x[0],
+            PolicyNumColumn = x[1],
+            IdentityColumn = x[2],
+            WebServGood = "לא נמצא"
+
+        }).ToList();
+
+        //VisibilityStatus = GetIfVisible("IdentityColumn");
+        //myGc.Visible = GetIfVisible(myGc.Field.ToString());
         Orders = Enumerable.Range(1, 25).Select(x => new Order()
         {
             OrderID = 1000 + x,
@@ -33,10 +136,187 @@
             OrderDate = DateTime.Now.AddDays(-x),
         }).ToList();
     }
-    public class Order {
-        public int? OrderID { get; set; }
+    public class testdata
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string HebName { get; set; }
+
+    }
+    public class Order
+    {
+        public int OrderID { get; set; }
         public string CustomerID { get; set; }
         public DateTime? OrderDate { get; set; }
         public double? Freight { get; set; }
     }
+    public class MainTable
+    {
+
+        public string ForTiuk { get; set; }
+        public string PageStartNum { get; set; }
+        public string DocTypeColumn { get; set; }
+        public string NameFile { get; set; }
+        public string AttachColumn { get; set; }
+        public string PolicyNumColumn { get; set; }
+        public string IdentityColumn { get; set; }
+        public string ClaimNoColumn { get; set; }
+        public string RegNumColumn { get; set; }
+        public string EventDateColumn { get; set; }
+        public string AgentColumn { get; set; }
+        public string SectorColumn { get; set; }
+        public string EnvDescColumn { get; set; }
+        public string ActivityCoulomn { get; set; }
+        public string OriginaStartPageColumn { get; set; }
+        public string PageToSplitColumn { get; set; }
+        public string WebServGood { get; set; }
+        public string TeamNumberColumn { get; set; }
+        public string FolderTypeCodeColumn { get; set; }
+        public string PlaintiffNameColumn { get; set; }
+        public string PlaintiffNoColumn { get; set; }
+        public string InsuredLicenseNoColumn { get; set; }
+        public string InsurNameColumn { get; set; }
+        public string MorePolicesColumn { get; set; }
+        public string MaasikNumColumn { get; set; }
+        public string ToUserColumn { get; set; }
+        public string IDTypeColumn { get; set; }
+        public string SignatureDateColumn { get; set; }
+
+
+    }
+    public class CoulmnsTable
+    {
+
+        public string TableName { get; set; }
+        public string Environment { get; set; }
+        public string FieldName { get; set; }
+        public string FieldNameHeb { get; set; }
+        public string Visible { get; set; }
+        public string OrderField { get; set; }
+        public string ColumnEdit { get; set; }
+        public string ColumnWidth { get; set; }
+        public string ColumnIsList { get; set; }
+
+    }
+    public void RowSelectedEvent(CellEditArgs<Order> item)
+    {
+        Order myItem = new();
+        myItem.CustomerID = "ALFKIa";
+        myItem.OrderDate = DateTime.UtcNow;
+        myItem.Freight = 334.56;
+        myItem.OrderID = 6665;
+        sfgridref.AddRecord(myItem);
+        //Orders.Insert(3,myItem);
+        //StateHasChanged();
+    }
+    public void Keypress(KeyboardEventArgs args)
+    {
+        string KeyPressed = "Key Pressed is " + args.Key;
+    }
+    public void onkeyup(KeyboardEventArgs args)
+    {
+        string KeyPressed = "Key Pressed is " + args.Key;
+        switch (args.Key)
+        {
+            case "F1":
+                break;
+            case "F2":
+                break;
+            case "F3":
+                break;
+            case "F4":
+                break;
+            case "F5":
+                break;
+            case "F6":
+                break;
+            case "F7":
+                break;
+            case "F8":
+                break;
+            case "F9":
+                break;
+            case "F10":
+                break;
+            case "F11":
+                break;
+            case "F12":
+                break;
+
+            case "PageDown":
+                break;
+            case "PageUp":
+                break;
+
+        }
+    }
+    public double SelectedRowIndex()
+    {
+        return rowSelect;
+    }
+    //ventCallback<RowSelectEventArgs<TValue>> RowSelected
+    public void setRowSelected(RowSelectEventArgs<MainTable> rowSelectedItem)
+    {
+        rowSelect = rowSelectedItem.RowIndex;
+        selectedRowData = MyRows[(int)rowSelectedItem.RowIndex];
+    }
+    public bool GetIfVisible(string mFieldName)
+    {
+        if (MyColumns.Where(x => x.FieldName == mFieldName).ElementAt(0).Visible=="1")
+            return true;
+        else
+            return false;
+    }
+    public string GetFieldNameByOrder(int order)
+    {
+        if (MyColumns == null)
+            GetDataColumn();
+        CoulmnIndex++;
+        return MyColumns[order].FieldName;
+
+    }
+    public void GetDataColumn()
+    {
+
+        var mrespons = newSqlent.ExcuteSQLWebServiceAsync("*", "TblConfigFields", "WHERE Environment = N'" + Evnvironment + "' ORDER BY OrderField", "");
+        MyColumns = mrespons.Result.Body.ExcuteSQLWebServiceResult.Select(x => new CoulmnsTable()
+        {
+            TableName = x[0],
+            Environment = x[1],
+            FieldName = x[2],
+            FieldNameHeb = x[3],
+            Visible = x[4],
+            OrderField = x[5],
+            ColumnEdit = x[6],
+            ColumnWidth = x[7],
+            ColumnIsList = x[8]
+
+        }).ToList();
+    }
+    public string GetHeaderText(string mFieldName)
+    {
+        return MyColumns.Where(x => x.FieldName == mFieldName).ElementAt(0).FieldNameHeb;
+    }
+    public string GetWidth(string mFieldName)
+    {
+        return MyColumns.Where(x => x.FieldName == mFieldName).ElementAt(0).ColumnWidth;
+    }
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Text == "Add")
+        {
+            MainTable myItem = new();
+            myItem.DocTypeColumn = "ALFKIa";
+            myItem.PolicyNumColumn = "jjjj";
+            myItem.IdentityColumn = "334.56";
+            myItem.WebServGood = "55";
+            MyOrders.AddRecord(myItem, rowSelect);
+            //await this.Grid.GroupExpandAll();
+        }
+        if (args.Item.Text == "Collapse all")
+        {
+            //await this.Grid.GroupCollapseAll();
+        }
+    }
+    //GridEditSettings
 }
