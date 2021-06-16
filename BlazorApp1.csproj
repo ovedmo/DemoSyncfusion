@@ -6,9 +6,23 @@
 
   <ItemGroup>
     <PackageReference Include="Syncfusion.Blazor.Calendars" Version="19.1.0.67" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="19.1.0.67" />
     <PackageReference Include="Syncfusion.Blazor.Grid" Version="19.1.0.67" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="19.1.0.67" />
     <PackageReference Include="Syncfusion.Blazor.Layouts" Version="19.1.0.67" />
     <PackageReference Include="Syncfusion.Blazor.PdfViewerServer.Windows" Version="19.1.0.67" />
+	  <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
+	  <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
+	  <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
+	  <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />	  
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>

@@ -48,3 +48,12 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+.e-grid td.e-active {
+    background: #28a745;
+    color: #000;
+}
+.anton{
+    color:blue;
+}
